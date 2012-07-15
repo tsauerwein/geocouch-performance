@@ -1,0 +1,50 @@
+diff --git a/src/vtree/vtree.erl b/src/vtree/vtree.erl
+index 9a51679..c502f4b 100644
+--- a/src/vtree/vtree.erl
++++ b/src/vtree/vtree.erl
+@@ -88,9 +88,15 @@ add_remove(Fd, Pos, TargetTreeHeight, AddKeyValues, KeysToRe
+ 
+ % Returns only the number of matching geometries
+ count_lookup(Fd, Pos, Bbox) ->
+-    case lookup(Fd, Pos, Bbox, {fun(_Item, Acc) -> {ok, Acc+1} end, 0}) of
++    case lookup(Fd, Pos, Bbox, {fun(_Item, {Acc, LeafAccesses}) ->
++            {ok, {Acc+1, LeafAccesses}}
++        end, {0, 0}}) of
+         {ok, []} -> 0;
+-        {ok, Count} -> Count
++        {ok, {Count, LeafAccesses}} ->
++            %{ok, FileLeafAccesses} = file:open("/tmp/LeafAccesses.txt", [appe
++            %io:fwrite(FileLeafAccesses, "~10B~n", [LeafAccesses]),
++            %file:close(FileLeafAccesses),
++            Count
+     end.
+ 
+ % Returns the total number of geometries
+@@ -170,12 +176,17 @@ lookup(Fd, Pos, Bboxes, {FoldFun, InitAcc}) ->
+             {ok, InitAcc}
+         end;
+     leaf ->
++        NewAcc = case InitAcc of
++            {Count, LeafAccesses} ->
++                {Count, LeafAccesses + 1};
++            _ -> InitAcc
++        end,
+         case bboxes_within(ParentMbr, Bboxes) of
+         % all children are within the bbox we search with
+         true ->
+             foldl_stop(fun({Mbr, _Meta, {Id, {Geom, Value}}}, Acc) ->
+                 FoldFun({{Mbr, Id}, {Geom, Value}}, Acc)
+-            end, InitAcc, NodesPos);
++            end, NewAcc, NodesPos);
+         false ->
+             % loop through all data nodes and find not disjoint ones
+             foldl_stop(fun({Mbr, _Meta, {Id, {Geom, Value}}}, Acc) ->
+@@ -185,7 +196,7 @@ lookup(Fd, Pos, Bboxes, {FoldFun, InitAcc}) ->
+                 false ->
+                     {ok, Acc}
+                 end
+-            end, InitAcc, NodesPos)
++            end, NewAcc, NodesPos)
+         end
+     end.
+
