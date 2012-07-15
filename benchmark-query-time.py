@@ -8,7 +8,8 @@ import time
 # Generates random query rectangles with a given aspect ratio and
 # measures the time to execute the bounding-box queries with these
 # rectangles.
-# Additionallly 
+# Additionally the number of leaf accesses for the queries is
+# printed (the patch 'vtree-leaf-accesses.diff' has to be applied).
 
 couch_url = "http://localhost:5985/"
 database_name = "geocouch_benchmark"
