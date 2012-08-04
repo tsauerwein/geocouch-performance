@@ -14,8 +14,8 @@ import time
 couch_url = "http://localhost:5985/"
 database_name = "geocouch_benchmark"
 
-#area = (6.3, 48.8, 8.0, 50.4) # germany_location_selection
-area = (5.8, 47.2, 15.0, 55.0) # germany_location
+area = (6.3, 48.8, 8.0, 50.4) # germany_location_selection
+# area = (5.8, 47.2, 15.0, 55.0) # germany_location/water
 
 number_of_queries = 500
 
@@ -34,6 +34,7 @@ yMax = area[3]
 
 # Maximum width of the query rectangle is 5% of the total width
 area_width = 0.05 * (xMax - xMin)
+# area_width = 0.1 * (xMax - xMin)
 
 random_pos = random.Random(number_of_queries)
 random_width = random.Random(number_of_queries)
