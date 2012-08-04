@@ -1,7 +1,7 @@
 import os
 import time
-import xdrlib
 import requests
+import rectangle_file_reader
 
 # Small script that imports data files of the test framework
 # developed for the evaluation of the RR*-Tree.
@@ -29,28 +29,8 @@ chunk_size = 500
 
 def main():
 	# read rectangles from file
-	file = open(rectangle_file, "rb")
-	data = file.read()
-	unpacker = xdrlib.Unpacker(data)
-
-	print("Reading input file...")
-	rectangles = []
-	count = 0
-	try:
-		# while True:
-		for x in range(0,20):
-			xMin = unpacker.unpack_double()
-			yMin = unpacker.unpack_double()
-			xMax = unpacker.unpack_double()
-			yMax = unpacker.unpack_double()
-
-			rectangles.append((xMin, yMin, xMax, yMax))
-			count += 1
-	except xdrlib.Error as error:
-		raise Exception("Error reading file", error.msg)
-	except EOFError:
-		print("Reached end of file")
-	file.close()
+	limit = 5000
+	(rectangles, count) = rectangle_file_reader.read_rectangles(rectangle_file, limit=limit)
 
 	print("Read %d rectangles" % (count))
 
@@ -107,11 +87,8 @@ def send(chunk):
 	docs = []
 
 	for doc in chunk:
-		index = doc[0]
-		xMin = doc[1][0]
-		yMin = doc[1][1]
-		xMax = doc[1][2]
-		yMax = doc[1][3]
+		(index, rectangle) = doc
+		(xMin, yMin, xMax, yMax) = rectangle
 
 		lowerLeft = "[%.10f, %.10f]" % (xMin, yMin)
 		lowerRight = "[%.10f, %.10f]" % (xMax, yMin)
