@@ -18,7 +18,7 @@ This project contains scripts to evaluate the performance of [GeoCouch](https://
 
 Usage
 ------
-The scripts require the library [requests](requests.readthedocs.org/) and were developed with Python 3.
+The scripts require the library [requests](http://requests.readthedocs.org/) and were developed with Python 3.
 
 The variables at the top of the scripts allow to define the CouchDB URL, the database name and the data sets. Then the scripts can be run with:
 
