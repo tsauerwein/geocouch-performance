@@ -67,7 +67,7 @@ def main():
 	# add spatial view that simply returns the document id
 	r = requests.put(couch_url + database_name + "/_design/benchmark", 
 		data='{\"spatial\":{\"justid\":\"(function(doc) { if (doc.geometry) { emit(doc.geometry, doc._id);}})\"}}')
-	print("Adding spatial view '" + database_name + "': " + r.text)
+	print("Adding spatial view '" + database_name + "/_design/benchmark" + "': " + r.text)
 
 	if r.status_code != 201:
 		raise Exception('Could not add spatial view') 

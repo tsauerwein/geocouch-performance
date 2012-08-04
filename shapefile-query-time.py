@@ -1,7 +1,7 @@
 import os
 import time
 import random
-import subprocess
+import requests
 import stat
 import time
 
@@ -59,11 +59,7 @@ start = time.time()
 
 for rectangle in query_rectangles:
     queryBbox = "%.8f,%.8f,%.8f,%.8f" % (rectangle[0], rectangle[1], rectangle[2], rectangle[3])
-    #os.system("curl -X GET '" + couch_url + database_name + "/_design/benchmark/_spatial/justid?bbox=" + queryBbox + "&count=true'")
-    output = subprocess.call("curl -X GET '" + couch_url + database_name + "/_design/benchmark/_spatial/justid?bbox=" + queryBbox + "&count=true'", 
-        shell=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT)
+    r = requests.get(couch_url + database_name + "/_design/benchmark/_spatial/justid?bbox=" + queryBbox + "&count=true")
 
 time_difference = time.time() - start
 print("%.f queries took %.5f seconds" %  (number_of_queries, time_difference))
