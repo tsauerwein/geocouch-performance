@@ -90,12 +90,16 @@ def send(chunk):
 		(index, rectangle) = doc
 		(xMin, yMin, xMax, yMax) = rectangle
 
-		lowerLeft = "[%.10f, %.10f]" % (xMin, yMin)
-		lowerRight = "[%.10f, %.10f]" % (xMax, yMin)
-		upperRight = "[%.10f, %.10f]" % (xMax, yMax)
-		upperLeft = "[%.10f, %.10f]" % (xMin, yMax)
+		if xMin == xMax and yMin == yMax:
+			# import points as points
+			geometry = '"geometry":{"type": "Point", "coordinates": [%.10f, %.10f]}' % (xMin, yMin)
+		else:
+			lowerLeft = "[%.10f, %.10f]" % (xMin, yMin)
+			lowerRight = "[%.10f, %.10f]" % (xMax, yMin)
+			upperRight = "[%.10f, %.10f]" % (xMax, yMax)
+			upperLeft = "[%.10f, %.10f]" % (xMin, yMax)
 
-		geometry = '"geometry":{"type": "Polygon", "coordinates": [[' + \
+			geometry = '"geometry":{"type": "Polygon", "coordinates": [[' + \
 lowerLeft + "," + lowerRight + "," + upperRight + "," + upperLeft + "," + lowerLeft + "]]}"
 
 		id = '"_id": "%010d"' % index
