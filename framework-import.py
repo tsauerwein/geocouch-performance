@@ -13,23 +13,26 @@ import rectangle_file_reader
 #
 
 couch_url = "http://localhost:5985/"
-database_name = "geocouch_benchmark"
 
-rectangle_file = "data/framework/abs02.rec"	# Absolute
-# rectangle_file = "data/framework/bit02.rec"	# Bit
-# rectangle_file = "data/framework/dia02.rec"	# Diagonal
-# rectangle_file = "data/framework/par02.rec"	# Parcel
-# rectangle_file = "data/framework/ped02.rec"	# P-edges
-# rectangle_file = "data/framework/pha02.rec"	# P-haze
-# rectangle_file = "data/framework/rea02.rec"	# CaliforniaStreets
-# rectangle_file = "data/framework/uni02.rec"	# ?
+prefix = "org_"
+imports = [
+	 (prefix + "abs02", "data/framework/abs02.rec")	# Absolute
+	,(prefix + "bit02", "data/framework/bit02.rec")	# Bit
+	,(prefix + "dia02", "data/framework/dia02.rec")	# Diagonal
+	,(prefix + "par02", "data/framework/par02.rec")	# Parcel
+	,(prefix + "ped02", "data/framework/ped02.rec")	# P-edges
+	,(prefix + "pha02", "data/framework/pha02.rec")	# P-haze
+	,(prefix + "rea02", "data/framework/rea02.rec")	# CaliforniaStreets
+	,(prefix + "uni02", "data/framework/uni02.rec")	# ?
+]
 
 # number of documents that are inserted at once
 chunk_size = 500
 
-def main():
+
+def import_file(database_name, rectangle_file):
 	# read rectangles from file
-	limit = 5000
+	limit = 500
 	(rectangles, count) = rectangle_file_reader.read_rectangles(rectangle_file, limit=limit)
 
 	print("Read %d rectangles" % (count))
@@ -119,7 +122,11 @@ lowerLeft + "," + lowerRight + "," + upperRight + "," + upperLeft + "," + lowerL
 	if r.status_code != 201:
 		raise Exception('Adding documents failed', r.text) 
 
-main()
+for (database_name, rectangle_file) in imports:
+	import_file(database_name, rectangle_file)
+	print()
+	print("-------------------------------------")
+	print()
 
 
 #curl -X GET 'http://localhost:5985/geocouch_benchmark/_design/benchmark/_spatial/justid?bbox=0,0,0,0&count=true'
