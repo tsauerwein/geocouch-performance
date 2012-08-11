@@ -32,7 +32,8 @@ chunk_size = 500
 
 def import_file(database_name, rectangle_file):
 	# read rectangles from file
-	limit = 500
+	# limit = 500
+	limit = None
 	(rectangles, count) = rectangle_file_reader.read_rectangles(rectangle_file, limit=limit)
 
 	print("Read %d rectangles" % (count))
